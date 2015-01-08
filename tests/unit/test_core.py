@@ -17,7 +17,7 @@ class TestCreate:
 
     def test_default_python(self, monkeypatch):
         fake_builder_instance = pretend.stub(
-            create=pretend.call_recorder(lambda dest: None),
+            create=pretend.call_recorder(lambda: None),
         )
         fake_builder_type = pretend.call_recorder(
             lambda *a, **kw: fake_builder_instance
@@ -44,17 +44,22 @@ class TestCreate:
 
         assert fake_select_builder.calls == [pretend.call(None)]
         assert fake_builder_type.calls == [
-            pretend.call(python=None, flavor=fake_flavor_instance, lol="wat"),
+            pretend.call(
+                destination="/fake/",
+                python=None,
+                flavor=fake_flavor_instance,
+                lol="wat"
+            ),
         ]
         assert fake_builder_instance.create.calls == [
-            pretend.call("/fake/"),
+            pretend.call(),
         ]
         assert fake_select_flavor.calls == [pretend.call()]
         assert fake_flavor_type.calls == [pretend.call()]
 
     def test_explicit_python(self, monkeypatch):
         fake_builder_instance = pretend.stub(
-            create=pretend.call_recorder(lambda dest: None),
+            create=pretend.call_recorder(lambda: None),
         )
         fake_builder_type = pretend.call_recorder(
             lambda *a, **kw: fake_builder_instance
@@ -84,13 +89,14 @@ class TestCreate:
         assert fake_select_builder.calls == [pretend.call(fake_python)]
         assert fake_builder_type.calls == [
             pretend.call(
+                destination="/fake/",
                 python=fake_python,
                 flavor=fake_flavor_instance,
                 lol="wat",
             ),
         ]
         assert fake_builder_instance.create.calls == [
-            pretend.call("/fake/"),
+            pretend.call(),
         ]
         assert fake_select_flavor.calls == [pretend.call()]
         assert fake_flavor_type.calls == [pretend.call()]

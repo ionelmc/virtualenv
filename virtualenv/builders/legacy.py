@@ -134,51 +134,6 @@ class LegacyBuilder(BaseBuilder):
         # TODO: Do we ever want to make this builder *not* available?
         return True
 
-    def _get_base_python_info(self):
-        # Get information from the base python that we need in order to create
-        # a legacy virtual environment.
-        return json.loads(
-            check_output([
-                self._get_base_python_bin(),
-                "-c",
-                textwrap.dedent("""
-                import json
-                import os
-                import os.path
-                import site
-                import sys
-
-                def resolve(path):
-                    return os.path.realpath(os.path.abspath(path))
-
-                print(
-                    json.dumps({
-                        "sys.version_info": tuple(sys.version_info),
-                        "sys.executable": resolve(sys.executable),
-                        "sys.prefix": resolve(sys.prefix),
-                        "sys.exec_prefix": resolve(sys.exec_prefix),
-                        "sys.path": [resolve(path) for path in sys.path],
-                        "sys.abiflags": getattr(sys, "abiflags", ""),
-                        "site.getsitepackages": [
-                            resolve(f) for f in getattr(site, "getsitepackages", lambda: site.addsitepackages(set()))()
-                        ],
-                        "lib": resolve(os.path.dirname(os.__file__)),
-                        "site.py": os.path.join(
-                            resolve(os.path.dirname(site.__file__)),
-                            "site.py",
-                        ),
-                        "arch": getattr(
-                            getattr(sys, 'implementation', sys),
-                            '_multiarch',
-                            sys.platform
-                        ),
-                        "is_pypy": hasattr(sys, 'pypy_version_info'),
-                    })
-                )
-                """),
-            ]).decode(locale.getpreferredencoding()),
-        )
-
     def _locate_module(self, mod, search_paths):
         for search_path in search_paths:
             pymod = os.path.join(search_path, mod + ".py")
@@ -197,16 +152,13 @@ class LegacyBuilder(BaseBuilder):
             b"'"
         )
 
-    def create_virtual_environment(self, destination):
-        # Get a bunch of information from the base Python.
-        base_python = self._get_base_python_info()
-
+    def create_virtual_environment(self):
         # Create our binaries that we'll use to create the virtual environment
-        bin_dir = os.path.join(destination, self.flavor.bin_dir)
+        bin_dir = os.path.join(self.destination, self.flavor.bin_dir)
         ensure_directory(bin_dir)
-        for python_bin in self.flavor.python_bins(base_python):
+        for python_bin in self.flavor.python_bins(self._python_info):
             copyfile(
-                base_python["sys.executable"],
+                self._python_info["sys.executable"],
                 os.path.join(bin_dir, python_bin),
             )
 
@@ -214,8 +166,8 @@ class LegacyBuilder(BaseBuilder):
         # the standard library that we need in order to ensure that we can
         # successfully bootstrap a Python interpreter.
         lib_dir = os.path.join(
-            destination,
-            self.flavor.lib_dir(base_python)
+            self.destination,
+            self.flavor.lib_dir(self._python_info)
         )
         ensure_directory(lib_dir)
 
@@ -229,22 +181,22 @@ class LegacyBuilder(BaseBuilder):
         # into our virtual environment's lib directory as well. Note that this
         # list also includes the os module, but since we've already copied
         # that we'll go ahead and omit it.
-        sys_prefix = base_python["sys.prefix"]
+        sys_prefix = self._python_info["sys.prefix"]
         lib_dirs = [
-            path for path in base_python["sys.path"]
+            path for path in self._python_info["sys.path"]
             if path.startswith(sys_prefix)
             # TODO: this has an unhandled edgecase, it handle case with
             # partial match (should only match full components)
 
         ]
 
-        for module in self.flavor.bootstrap_modules(base_python):
+        for module in self.flavor.bootstrap_modules(self._python_info):
             modulepath = self._locate_module(module, lib_dirs)
             if modulepath:
                 copyfile(
                     modulepath,
                     os.path.join(
-                        destination,
+                        self.destination,
                         os.path.relpath(modulepath, sys_prefix)
                     ),
                 )
@@ -253,20 +205,19 @@ class LegacyBuilder(BaseBuilder):
         if not osmodulepath:
             raise RuntimeError("Can't locate os module in any of %s." % lib_dirs)
         osmoduledestination = os.path.join(
-            destination,
+            self.destination,
             os.path.relpath(osmodulepath, sys_prefix)
         )
         copyfile(osmodulepath, osmoduledestination)
 
-
-        include_dir = self.flavor.include_dir(base_python)
+        include_dir = self.flavor.include_dir(self._python_info)
         copyfile(
-            os.path.join(base_python["sys.prefix"], include_dir),
-            os.path.join(destination, include_dir)
+            os.path.join(self._python_info["sys.prefix"], include_dir),
+            os.path.join(self.destination, include_dir)
         )
         copyfile(
-            os.path.join(base_python["sys.prefix"], include_dir),
-            os.path.join(destination, "local", include_dir)
+            os.path.join(self._python_info["sys.prefix"], include_dir),
+            os.path.join(self.destination, "local", include_dir)
         )
 
         dst = os.path.join(os.path.dirname(osmoduledestination), "site.py")
@@ -274,20 +225,20 @@ class LegacyBuilder(BaseBuilder):
             # Get the data from our source file, and replace our special
             # variables with the computed data.
             data = SITE
-            data = data.replace(b"__PREFIX__", self._path_repr(destination))
-            data = data.replace(b"__EXEC_PREFIX__", self._path_repr(destination))
+            data = data.replace(b"__PREFIX__", self._path_repr(self.destination))
+            data = data.replace(b"__EXEC_PREFIX__", self._path_repr(self.destination))
             data = data.replace(
                 b"__BASE_PREFIX__",
-                self._path_repr(base_python["sys.prefix"]),
+                self._path_repr(self._python_info["sys.prefix"]),
             )
             data = data.replace(
-                b"__BASE_EXEC_PREFIX__", self._path_repr(base_python["sys.exec_prefix"]),
+                b"__BASE_EXEC_PREFIX__", self._path_repr(self._python_info["sys.exec_prefix"]),
             )
-            data = data.replace(b"__SITE__", self._path_repr(base_python["site.py"]))
+            data = data.replace(b"__SITE__", self._path_repr(self._python_info["site.py"]))
             data = data.replace(
                 b"__GLOBAL_SITE_PACKAGES__",
                 b"[" + b", ".join(
-                    self._path_repr(path) for path in base_python["site.getsitepackages"]
+                    self._path_repr(path) for path in self._python_info["site.getsitepackages"]
                 ) + b"]",
             )
 

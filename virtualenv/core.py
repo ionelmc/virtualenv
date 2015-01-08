@@ -50,5 +50,10 @@ def create(destination, python=None, **kwargs):
 
     # Instantiate our selected builder with the values given to us, and then
     # create our virtual environment using the given builder.
-    builder = builder_type(python=python, flavor=flavor_type(), **kwargs)
-    builder.create(destination)
+    builder = builder_type(
+        destination=destination,
+        python=python,
+        flavor=flavor_type(),
+        **kwargs
+    )
+    builder.create()

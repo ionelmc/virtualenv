@@ -41,16 +41,16 @@ class VenvBuilder(BaseBuilder):
         else:
             return True
 
-    def create_virtual_environment(self, destination):
+    def create_virtual_environment(self):
         # Create our script using our template and the given settings for
         # this environment.
         script = _SCRIPT.format(
             system_site_packages=self.system_site_packages,
-            destination=destination,
+            destination=self.destination,
         )
 
         # Subshell into the venv module and create a new virtual environment.
         # We use the programatic API instead of the command line because we
         # want to not include pip in this, and Python 3.3's venv module doesn't
         # support the --without-pip flag.
-        subprocess.check_call([self._get_base_python_bin(), "-c", script])
+        subprocess.check_call([self._python_bin, "-c", script])

@@ -44,13 +44,14 @@ def test_venv_builder_check_available_fails(monkeypatch):
 def test_venv_builder_create_venv(tmpdir, monkeypatch, system_site_packages):
     check_call = pretend.call_recorder(lambda *a, **kw: None)
     monkeypatch.setattr(subprocess, "check_call", check_call)
-    monkeypatch.setattr(VenvBuilder, "_get_base_python_bin", lambda self: "real-wat")
+    monkeypatch.setattr(VenvBuilder, "_python_bin", "real-wat")
     builder = VenvBuilder(
+        str(tmpdir),
         "wat",
         None,
         system_site_packages=system_site_packages,
     )
-    builder.create_virtual_environment(str(tmpdir))
+    builder.create_virtual_environment()
 
     script = _SCRIPT.format(
         system_site_packages=system_site_packages,

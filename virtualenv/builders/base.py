@@ -1,16 +1,19 @@
-from __future__ import absolute_import, division, print_function
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 import glob
+import json
+import locale
 import io
 import os.path
-import locale
-import json
 import shutil
 import sys
 import textwrap
 
-from virtualenv._compat import FileNotFoundError
 from virtualenv._compat import check_output
+from virtualenv._compat import FileNotFoundError
+from virtualenv._utils import cached_property
 
 
 WHEEL_DIR = os.path.join(
@@ -21,12 +24,10 @@ SCRIPT_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "_scripts",
 )
 
-MAIN_SUFFIX = ".__main__" if sys.version_info[:2] == (2, 6) else ""
-
 
 class BaseBuilder(object):
 
-    def __init__(self, python, flavor, system_site_packages=False,
+    def __init__(self, destination, python, flavor, system_site_packages=False,
                  clear=False, pip=True, setuptools=True,
                  extra_search_dirs=None, prompt=""):
         # We default to sys.executable if we're not given a Python.
@@ -46,11 +47,15 @@ class BaseBuilder(object):
         self.extra_search_dirs = extra_search_dirs
         self.prompt = prompt
 
+        # Resolve the destination first, we can't save relative paths
+        self.destination = os.path.realpath(os.path.abspath(destination))
+
     @classmethod
     def check_available(cls, python):
         raise NotImplementedError
 
-    def _get_base_python_bin(self):
+    @cached_property
+    def _python_bin(self):
         return json.loads(
             check_output([
                 self.python,
@@ -83,35 +88,77 @@ class BaseBuilder(object):
             ]).decode(locale.getpreferredencoding()),
         )
 
+    @cached_property
+    def _python_info(self):
+        # Get information from the base python that we need in order to create
+        # a legacy virtual environment.
+        return json.loads(
+            check_output([
+                self._python_bin,
+                "-c",
+                textwrap.dedent("""
+                import json
+                import os
+                import os.path
+                import site
+                import sys
 
-    def create(self, destination):
-        # Resolve the destination first, we can't save relative paths
-        destination = os.path.realpath(os.path.abspath(destination))
+                def resolve(path):
+                    return os.path.realpath(os.path.abspath(path))
 
+                print(
+                    json.dumps({
+                        "sys.version_info": tuple(sys.version_info),
+                        "sys.executable": resolve(sys.executable),
+                        "sys.prefix": resolve(sys.prefix),
+                        "sys.exec_prefix": resolve(sys.exec_prefix),
+                        "sys.path": [resolve(path) for path in sys.path],
+                        "sys.abiflags": getattr(sys, "abiflags", ""),
+                        "site.getsitepackages": [
+                            resolve(f) for f in getattr(site, "getsitepackages", lambda: site.addsitepackages(set()))()
+                        ],
+                        "lib": resolve(os.path.dirname(os.__file__)),
+                        "site.py": os.path.join(
+                            resolve(os.path.dirname(site.__file__)),
+                            "site.py",
+                        ),
+                        "arch": getattr(
+                            getattr(sys, 'implementation', sys),
+                            '_multiarch',
+                            sys.platform
+                        ),
+                        "is_pypy": hasattr(sys, 'pypy_version_info'),
+                    })
+                )
+                """),
+            ]).decode(locale.getpreferredencoding()),
+        )
+
+    def create(self):
         # Clear the existing virtual environment.
         if self.clear:
-            self.clear_virtual_environment(destination)
+            self.clear_virtual_environment()
 
         # Actually Create the virtual environment
-        self.create_virtual_environment(destination)
+        self.create_virtual_environment()
 
         # Install our activate scripts into the virtual environment
-        self.install_scripts(destination)
+        self.install_scripts()
 
         # Install the packaging tools (pip and setuptools) into the virtual
         # environment.
-        self.install_tools(destination)
+        self.install_tools()
 
-    def clear_virtual_environment(self, destination):
+    def clear_virtual_environment(self):
         try:
-            shutil.rmtree(destination)
+            shutil.rmtree(self.destination)
         except FileNotFoundError:
             pass
 
-    def create_virtual_environment(self, destination):
+    def create_virtual_environment(self):
         raise NotImplementedError
 
-    def install_scripts(self, destination):
+    def install_scripts(self):
         # Determine the list of files based on if we're running on Windows
         files = self.flavor.activation_scripts.copy()
 
@@ -119,11 +166,8 @@ class BaseBuilder(object):
         # platform.
         files.add("activate_this.py")
 
-        # Ensure that our destination is an absolute path
-        destination = os.path.abspath(destination)
-
         # Determine the name of our virtual environment
-        name = os.path.basename(destination)
+        name = os.path.basename(self.destination)
 
         # Determine the special Windows prompt
         win_prompt = self.prompt if self.prompt else "({0})".format(name)
@@ -134,7 +178,7 @@ class BaseBuilder(object):
         for filename in files:
             # Compute our source and target paths
             source = os.path.join(SCRIPT_DIR, filename)
-            target = os.path.join(destination, self.flavor.bin_dir, filename)
+            target = os.path.join(self.destination, self.flavor.bin_dir, filename)
 
             # Write the files themselves into their target locations
             with io.open(source, "r", encoding="utf-8") as source_fp:
@@ -145,14 +189,14 @@ class BaseBuilder(object):
                     data = source_fp.read()
                     data = data.replace("__VIRTUAL_PROMPT__", self.prompt)
                     data = data.replace("__VIRTUAL_WINPROMPT__", win_prompt)
-                    data = data.replace("__VIRTUAL_ENV__", destination)
+                    data = data.replace("__VIRTUAL_ENV__", self.destination)
                     data = data.replace("__VIRTUAL_NAME__", name)
                     data = data.replace("__BIN_NAME__", self.flavor.bin_dir)
 
                     # Actually write our content to the target locations
                     target_fp.write(data)
 
-    def install_tools(self, destination):
+    def install_tools(self):
         # Determine which projects we are going to install
         projects = []
         if self.pip:
@@ -167,7 +211,7 @@ class BaseBuilder(object):
         # Compute the path to the Python interpreter inside the virtual
         # environment.
         python = os.path.join(
-            destination,
+            self.destination,
             self.flavor.bin_dir,
             self.flavor.python_bin,
         )
@@ -177,8 +221,9 @@ class BaseBuilder(object):
 
         # Construct the command that we're going to use to actually do the
         # installs.
+        main_suffix = ".__main__" if self._python_info["sys.version_info"][:2] == [2, 6] else ""
         command = [
-            python, "-m", "pip" + MAIN_SUFFIX, "install", "--no-index", "--isolated",
+            python, "-m", "pip" + main_suffix, "install", "--no-index", "--isolated",
             "--find-links", WHEEL_DIR,
         ]
 
