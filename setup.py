@@ -12,7 +12,7 @@ base_dir = os.path.dirname(__file__)
 
 # Fetch the metadata
 about = {}
-with open(os.path.join(base_dir, "virtualenv", "__about__.py")) as f:
+with open(os.path.join(base_dir, "src", "virtualenv", "__about__.py")) as f:
     exec(f.read(), about)
 
 
@@ -59,6 +59,10 @@ setuptools.setup(
         "virtualenv._scripts",
         "virtualenv._wheels",
     ],
+
+    package_dir={
+        "": "src"
+    },
 
     package_data={
         "virtualenv._scripts": ["activate.*", "deactivate.bat"],
