@@ -28,13 +28,13 @@ What's currently tested (on Windows |appveyor| and Linux |circleci| |travis|):
     :alt: CircleCI Build Status
     :target: https://circleci.com/gh/ionelmc/virtualenv/tree/develop
 
-.. |travis| image:: http://img.shields.io/travis/ionelmc/python-nameless/develop.png?style=flat
+.. |travis| image:: http://img.shields.io/travis/ionelmc/virtualenv/develop.png?style=flat
     :alt: Travis-CI Build Status
-    :target: https://travis-ci.org/ionelmc/python-nameless
+    :target: https://travis-ci.org/ionelmc/virtualenv
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/ionelmc/python-nameless?branch=develop
+.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/ionelmc/virtualenv?branch=develop
     :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/ionelmc/python-nameless
+    :target: https://ci.appveyor.com/project/ionelmc/virtualenv
 
 What's missing:
 
