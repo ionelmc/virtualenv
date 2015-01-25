@@ -39,6 +39,7 @@ What's currently tested (on Windows |appveyor| and Linux |circleci| |travis|):
 What's missing:
 
 * no symlinks or hardlinks, just dumb copies
+* relocation support
 * you tell me ...
 
 For the old documentation, see https://virtualenv.pypa.io/
