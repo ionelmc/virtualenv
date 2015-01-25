@@ -42,4 +42,12 @@ What's missing:
 * relocation support
 * you tell me ...
 
+Try it
+------
+
+To install this, just ``pip install --ignore-installed https://github.com/ionelmc/virtualenv/archive/develop.zip``.
+
+Docs
+----
+
 For the old documentation, see https://virtualenv.pypa.io/
