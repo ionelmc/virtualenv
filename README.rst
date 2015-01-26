@@ -7,7 +7,7 @@ What pythons are currently supported in this fork:
 
 * Python 2.6
 * PyPy
-* PyPy3
+* PyPy3 (on Windows it doesn't really work cause `pip is broken on the 2.4.0 release <https://bitbucket.org/pypy/pypy/issue/1696/can-not-install-pip-with-get-pippy>`_)
 * Python 2.6
 * Python 2.7
 * Python 3.2
@@ -23,6 +23,8 @@ What's currently tested (on Windows |appveyor| and Linux |circleci| |travis|):
 * bin scripts
 * tox integration
 * C extensions compile properly inside
+
+Debian-flavored linuxes are also supported (with their messy patches on site.py/distutils/sysconfig).
 
 .. |circleci| image:: https://circleci.com/gh/ionelmc/virtualenv/tree/develop.svg?style=svg
     :alt: CircleCI Build Status
