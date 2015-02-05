@@ -83,7 +83,7 @@ class BaseBuilder(object):
                         if os.path.exists(bin):
                             break
                     else:
-                        raise RuntimeError("Could not find any PyPy bin. None of %r exists." % paths)
+                        bin = sys.executable
                 elif sys.platform.startswith("win") or sys.platform == "cli" and os.name == "nt":
                     bin = os.path.join(prefix, name)
                 else:
