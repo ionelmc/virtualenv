@@ -240,10 +240,10 @@ class LegacyBuilder(BaseBuilder):
 
         # Copy extra bins, like some DLLs PyPy likes to have in it's bin dir ...
         for extra_bin in self.flavor.extra_bins(self._python_info):
-            for bin_src in [
+            for bin_src in set([
                 os.path.join(self._python_info["sys.prefix"], extra_bin),
                 os.path.join(os.path.dirname(self._python_info["sys.executable"]), extra_bin),
-            ]:
+            ]):
                 if os.path.exists(bin_src):
                     copyfile(
                         bin_src,
