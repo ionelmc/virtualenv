@@ -24,7 +24,12 @@ class PosixFlavor(BaseFlavor):
         ]
 
     def extra_bins(self, python_info):
-        return []
+        if python_info["is_pypy"]:
+            return [
+                'libpypy-c.so',
+            ]
+        else:
+            return []
 
     def lib_dir(self, python_info):
         return posixpath.join(
