@@ -32,7 +32,7 @@ else:
 
 prev_sys_path = list(sys.path)
 
-import site
+import site  # flake8: noqa
 
 site.addsitedir(site_packages)
 sys.real_prefix = sys.prefix
