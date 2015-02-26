@@ -11,8 +11,7 @@ from virtualenv.flavors.windows import WindowsFlavor
 
 def select_flavor():
     # Determine if we're running under Windows or not.
-    if (sys.platform.startswith("win")
-            or (sys.platform == "cli" and os.name == "nt")):
+    if (sys.platform.startswith("win") or (sys.platform == "cli" and os.name == "nt")):
         return WindowsFlavor
 
     return PosixFlavor

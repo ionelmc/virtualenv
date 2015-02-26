@@ -146,13 +146,11 @@ def test_base_builder_install_tools(tmpdir, flavor, pip, setuptools,
                     "--ignore-installed",
                     "--disable-pip-version-check",
                     "--find-links", WHEEL_DIR,
-                ]
-                + list(
+                ] + list(
                     itertools.chain.from_iterable(
                         ["--find-links", sd] for sd in extra_search_dirs
                     )
-                )
-                + projects,
+                ) + projects,
                 PYTHONPATH=os.pathsep.join(
                     glob.glob(os.path.join(WHEEL_DIR, "*.whl")),
                 ),
