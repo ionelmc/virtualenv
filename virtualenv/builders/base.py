@@ -79,18 +79,22 @@ class BaseBuilder(object):
                         os.path.join(prefix, "bin", "pypy"),
                         os.path.join(prefix, "pypy.exe"),
                     ]
-                    for bin in paths:
-                        if os.path.exists(bin):
-                            break
-                    else:
-                        bin = sys.executable
                 elif sys.platform.startswith("win") or sys.platform == "cli" and os.name == "nt":
-                    bin = os.path.join(prefix, name)
+                    paths = [
+                        os.path.join(prefix, name),
+                        os.path.join(prefix, "Scripts", name),
+                    ]
                 else:
                     bindir = sysconfig.get_config_var("BINDIR")
                     if not bindir:
                         raise RuntimeError("BINDIR missing from sysconfig.")
-                    bin = os.path.join(bindir, name)
+                    paths = [os.path.join(bindir, name)]
+
+                for bin in paths:
+                    if os.path.exists(bin):
+                        break
+                else:
+                    bin = sys.executable
                 print(json.dumps(bin))
                 """)
             ]).decode(locale.getpreferredencoding()),
