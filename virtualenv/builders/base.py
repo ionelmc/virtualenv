@@ -82,7 +82,7 @@ class BaseBuilder(object):
                 elif sys.platform.startswith("win") or sys.platform == "cli" and os.name == "nt":
                     paths = [
                         os.path.join(prefix, name),
-                        os.path.join(prefix, "Scripts", name),
+                        os.path.join(prefix, "python.exe"),
                     ]
                 else:
                     bindir = sysconfig.get_config_var("BINDIR")
