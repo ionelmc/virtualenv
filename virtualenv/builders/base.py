@@ -140,6 +140,7 @@ class BaseBuilder(object):
                         "sys.exec_prefix": resolve(sys.exec_prefix),
                         "sys.path": [resolve(path) for path in sys.path],
                         "sys.abiflags": getattr(sys, "abiflags", ""),
+                        "sys.pydebug": getattr(sys, "pydebug", False),
                         "site.getsitepackages": [
                             resolve(f) for f in getattr(site, "getsitepackages", getsitepackages)()
                         ],

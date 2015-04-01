@@ -43,5 +43,8 @@ class PosixFlavor(BaseFlavor):
         else:
             return posixpath.join(
                 "include",
-                "python{1}.{2}{0}".format(python_info["sys.abiflags"], *python_info["sys.version_info"])
+                "python{1}.{2}{0}".format(
+                    python_info["sys.abiflags"] or (
+                        "_d" if python_info["sys.pydebug"] else ""
+                    ), *python_info["sys.version_info"])
             )
