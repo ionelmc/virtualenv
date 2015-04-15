@@ -21,6 +21,11 @@ try:
     import _struct
 except ImportError:
     pass
+try:
+    # Workaround for pypy having a `builtin` symbol module. Don't laugh, it's not funny!
+    import symbol
+except ImportError:
+    pass
 
 # We want to stash the global site-packages here, this will be None if we're
 # not adding them.
@@ -84,6 +89,7 @@ dirty_modules = [
     "encodings",
     "site",
     "sitecustomize",
+    "symbol",
 ]
 dirty_modules.extend(sys.builtin_module_names)
 for key in list(sys.modules):
