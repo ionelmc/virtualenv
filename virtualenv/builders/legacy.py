@@ -128,7 +128,9 @@ sys.flags = _real_sys_flags
 # (it will add dist-packages and other crazy stuff).
 # Therefore we need to match pip's install location (site-packages)
 from distutils import sysconfig
-addsitedir(sysconfig.get_python_lib())
+python_lib = sysconfig.get_python_lib()
+if python_lib not in sys.path:
+    addsitedir(python_lib)
 
 # If we're running with the global site-packages enabled, then we'll want to
 # go ahead and enable it here so that it comes after the virtual environment's
