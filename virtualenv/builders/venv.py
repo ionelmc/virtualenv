@@ -40,7 +40,7 @@ class VenvBuilder(BaseBuilder):
                 python,
                 "-c",
                 textwrap.dedent("""
-                import venv
+                import venv, sysconfig
                 from sysconfig import get_scheme_names
                 from distutils.command.install import INSTALL_SCHEMES
 
