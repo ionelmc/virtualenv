@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 
 import click
@@ -16,7 +17,10 @@ from virtualenv.core import create
         "sourcing an activate script in its bin directory."
     ),
 )
-@click.version_option(version=__version__)
+@click.version_option(
+    version=__version__,
+    message="%(prog)s, version %(version)s from {}".format(os.path.dirname(__file__))
+)
 @click.option("-v", "--verbose", count=True, help="Increase verbosity.")
 @click.option("-q", "--quiet", count=True, help="Decrease verbosity.")
 @click.option(
