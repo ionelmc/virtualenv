@@ -14,6 +14,7 @@ import venv
 builder = venv.EnvBuilder(
     system_site_packages={system_site_packages!r},
     symlinks=False,
+    upgrade=True,
 )
 
 # Make sure that pip is actually disabled.
