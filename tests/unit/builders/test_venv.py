@@ -23,7 +23,7 @@ def test_venv_builder_check_available_success(monkeypatch):
             "wat",
             "-c",
             textwrap.dedent("""
-            import venv
+            import venv, sysconfig
             from sysconfig import get_scheme_names
             from distutils.command.install import INSTALL_SCHEMES
 
@@ -51,7 +51,7 @@ def test_venv_builder_check_available_fails(monkeypatch):
             "wat",
             "-c",
             textwrap.dedent("""
-            import venv
+            import venv, sysconfig
             from sysconfig import get_scheme_names
             from distutils.command.install import INSTALL_SCHEMES
 
