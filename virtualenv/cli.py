@@ -19,7 +19,7 @@ from virtualenv.core import create
 )
 @click.version_option(
     version=__version__,
-    message="%(prog)s, version %(version)s from {}".format(os.path.dirname(__file__))
+    message="%(prog)s, version %(version)s from {0}".format(os.path.dirname(__file__))
 )
 @click.option("-v", "--verbose", count=True, help="Increase verbosity.")
 @click.option("-q", "--quiet", count=True, help="Decrease verbosity.")
