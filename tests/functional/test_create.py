@@ -223,8 +223,12 @@ def assert_env_creation(env):
 
 def test_create_2time(env):
     target = env.target_python
-    if target and ('Python33' in target or 'python3.3' in target):
-        pytest.xfail("Python 3.3's venv doesn't support recreation.")
+    if target:
+        if 'Python33' in target or 'python3.3' in target:
+            pytest.xfail("Python 3.3's venv doesn't support recreation.")
+    else:
+        if sys.version_info[:2] == (3, 3):
+            pytest.xfail("Python 3.3's venv doesn't support recreation.")
     print("********* RECREATE *********")
     # Test to see if recreation doesn't blow up something
     env.create_virtualenv()
