@@ -307,14 +307,13 @@ class LegacyBuilder(BaseBuilder):
         copyfile(osmodulepath, osmoduledestination)
 
         include_dir = self.flavor.include_dir(self._python_info)
-        copyfile(
-            os.path.join(self._python_info["sys.prefix"], include_dir),
-            os.path.join(destination, include_dir)
-        )
-        copyfile(
-            os.path.join(self._python_info["sys.prefix"], include_dir),
-            os.path.join(destination, "local", include_dir)
-        )
+        src_include_dir = os.path.join(self._python_info["sys.prefix"], include_dir)
+        if os.path.exists(src_include_dir):
+            copyfile(src_include_dir, os.path.join(destination, include_dir))
+            copyfile(src_include_dir, os.path.join(destination, "local", include_dir))
+        else:
+            logger.critical("You're missing %r. You many need to install the development packages for this intepreter.",
+                            src_include_dir)
 
         dst = os.path.join(os.path.dirname(osmoduledestination), "site.py")
         logger.debug("Writing %s", dst)
