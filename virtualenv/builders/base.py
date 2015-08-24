@@ -236,7 +236,7 @@ class BaseBuilder(object):
         # Determine which projects we are going to install
         projects = []
         if self.pip:
-            projects.append("pip")
+            projects.extend(("pip", "wheel"))
         if self.setuptools:
             projects.append("setuptools")
 
