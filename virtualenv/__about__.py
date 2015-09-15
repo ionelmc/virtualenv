@@ -1,3 +1,4 @@
+# encoding: utf-8
 from __future__ import absolute_import, division, print_function
 
 __all__ = [
@@ -5,14 +6,14 @@ __all__ = [
     "__email__", "__license__", "__copyright__",
 ]
 
-__title__ = "virtualenv"
-__summary__ = "Virtual Python Environment Builder"
-__uri__ = "https://virtualenv.pypa.io/"
+__title__ = "virtualenv-rewrite"
+__summary__ = "Virtual Python Environment Builder (complete rewrite)"
+__uri__ = "https://github.com/ionelmc/virtualenv/"
 
-__version__ = "14.0.0.dev0"
+__version__ = "14.0.0"
 
-__author__ = "Python Packaging Authority"
-__email__ = "pypa-dev@googlegroups.com"
+__author__ = "Ionel Cristian Mărieș"
+__email__ = "contact@ionelmc.ro"
 
 __license__ = "MIT"
 __copyright__ = (
