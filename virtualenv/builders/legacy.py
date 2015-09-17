@@ -58,6 +58,7 @@ if "VIRTUALENV_BOOTSTRAP_ADJUST_EGGINSERT" in os.environ:
 new_sys_path = []
 for path in sys.path:
     # TODO: Is there a better way to determine this?
+    path = os.path.realpath(os.path.abspath(path))
     if path.startswith(sys.prefix):
         path = os.path.join(
             sys.base_prefix,
