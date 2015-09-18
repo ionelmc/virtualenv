@@ -4,7 +4,7 @@ sudo: false
 env:
   - INSTALL_FIRST=yes TOXENV=py26
   - INSTALL_FIRST=yes TOXENV=py27
-  - INSTALL_FIRST=yes TOXENV=py32
+#  - INSTALL_FIRST=yes TOXENV=py32
   - INSTALL_FIRST=yes TOXENV=py33
   - INSTALL_FIRST=yes TOXENV=py34
   - INSTALL_FIRST=yes TOXENV=py35
@@ -12,7 +12,7 @@ env:
   - INSTALL_FIRST=yes TOXENV=pypy3
   - TOXENV=py26
   - TOXENV=py27
-  - TOXENV=py32
+#  - TOXENV=py32
   - TOXENV=py33
   - TOXENV=py34
   - TOXENV=py35
