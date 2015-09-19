@@ -18,6 +18,7 @@ environment:
       PYTHON_ARCH: "64"
       TOXENV: "py27"
       TOXPYTHON: "C:\\Python27-x64\\python.exe"
+      WINDOWS_SDK_VERSION: "v7.0"
 
     - PYTHON_HOME: "C:\\Python33"
       PYTHON_VERSION: "3.3.6"
@@ -30,6 +31,7 @@ environment:
       PYTHON_ARCH: "64"
       TOXENV: "py33"
       TOXPYTHON: "C:\\Python33-x64\\python.exe"
+      WINDOWS_SDK_VERSION: "v7.1"
 
     - PYTHON_HOME: "C:\\Python34"
       PYTHON_VERSION: "3.4.2"
@@ -42,6 +44,7 @@ environment:
       PYTHON_ARCH: "64"
       TOXENV: "py34"
       TOXPYTHON: "C:\\Python34-x64\\python.exe"
+      WINDOWS_SDK_VERSION: "v7.1"
 
     - PYTHON_HOME: "C:\\Python35"
       PYTHON_VERSION: "3.5"
