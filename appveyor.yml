@@ -55,7 +55,7 @@ environment:
       TOXENV: "py35"
       TOXPYTHON: "C:\\Python35-x64\\python.exe"
 init:
-  - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
+  - "ECHO %PYTHON_HOME% %PYTHON_VERSION% %PYTHON_ARCH%"
 
 install:
   - "python -u .appveyor\\appveyor-bootstrap.py"
@@ -63,4 +63,4 @@ install:
 build: off
 
 test_script:
-    - "%CMD_IN_ENV% %PYTHON%/Scripts/tox.exe -v"
+    - "%CMD_IN_ENV% %PYTHON_HOME%/Scripts/tox.exe -v"
