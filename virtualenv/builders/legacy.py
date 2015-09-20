@@ -85,6 +85,7 @@ dirty_modules = [
     "__builtin__",
     "__main__",
     "_frozen_importlib",
+    "_frozen_importlib_external",
     "builtins",
     "codecs",
     "encodings",
