@@ -33,14 +33,16 @@ global_site_packages = __GLOBAL_SITE_PACKAGES__
 
 # We want to make sure that our sys.prefix and sys.exec_prefix match the
 # locations in our virtual enviornment.
-sys.prefix = __PREFIX__
-sys.exec_prefix = __EXEC_PREFIX__
+# Note that case normalization is done here instead of the host interpreter
+# to avoid differences - if any.
+sys.prefix = os.path.normcase(__PREFIX__)
+sys.exec_prefix = os.path.normcase(__EXEC_PREFIX__)
 
 # We want to record what the "real/base" prefix is of the virtual environment.
 # We store the variants `real_` prefix for compatibility with code that detects
 # virtualenvs that way. Eg: Debian patches, pip, wheel etc ...
-sys.real_prefix = sys.base_prefix = __BASE_PREFIX__
-sys.real_exec_prefix = sys.base_exec_prefix = __BASE_EXEC_PREFIX__
+sys.real_prefix = sys.base_prefix = os.path.normcase(__BASE_PREFIX__)
+sys.real_exec_prefix = sys.base_exec_prefix = os.path.normcase(__BASE_EXEC_PREFIX__)
 
 # This is used in the creation phase when pip is installed in the virtualenv.
 # We don't want those damn egg tripping up our PYTHONPATH whl loading, so we
@@ -58,7 +60,7 @@ if "VIRTUALENV_BOOTSTRAP_ADJUST_EGGINSERT" in os.environ:
 new_sys_path = []
 for path in sys.path:
     # TODO: Is there a better way to determine this?
-    path = os.path.realpath(os.path.abspath(path))
+    path = os.path.normcase(os.path.realpath(os.path.abspath(path)))
     if path.startswith(sys.prefix):
         path = os.path.join(
             sys.base_prefix,
