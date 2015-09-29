@@ -291,7 +291,7 @@ def test_sitepackages(env, python_conf):
         env.base_path, env.virtualenv_name, sitepackages
     )
     env.run_inside("python", "-c", "import sys; assert {0!r} in sys.path, 'is not in %r' % sys.path".format(
-        sitepackages_path
+        os.path.normcase(sitepackages_path)
     ))
     with open(os.path.join(sitepackages_path, "mymodule.pth"), 'w') as fh:
         fh.write(os.path.join(os.path.dirname(__file__), "testsite"))
