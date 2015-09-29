@@ -290,9 +290,16 @@ def test_pth_link_works(env, python_conf):
     sitepackages_path = os.path.join(
         env.base_path, env.virtualenv_name, sitepackages
     )
-    env.run_inside("python", "-c", "import sys; assert {0!r} in sys.path, 'is not in %r' % sys.path".format(
-        os.path.normcase(sitepackages_path)
-    ))
+    env.run_inside("python", "-c", """
+import sys
+from os.path import normcase
+ext_site = normcase({0!r})
+for path in sys.path:
+    if ext_site == normcase(path):
+        break
+else:
+    raise AssertionError('%r is not in %r' % (ext_site, sys.path))
+""".format(sitepackages_path))
     with open(os.path.join(sitepackages_path, "mymodule.pth"), 'w') as fh:
         fh.write(os.path.join(os.path.dirname(__file__), "testsite"))
     env.run_inside("python", "-c", "import mymodule")
