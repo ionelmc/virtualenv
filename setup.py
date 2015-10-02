@@ -17,12 +17,8 @@ with open(os.path.join(base_dir, "virtualenv", "__about__.py")) as f:
 
 
 # Build up the long description
-with open(os.path.join(base_dir, "docs", "index.rst")) as f:
+with open(os.path.join(base_dir, "README.rst")) as f:
     long_description = f.read()
-    long_description = long_description.strip().split("split here", 1)[0]
-
-with open(os.path.join(base_dir, "docs", "changes.rst")) as f:
-    long_description = "\n\n".join([long_description, f.read()])
 
 
 setuptools.setup(
