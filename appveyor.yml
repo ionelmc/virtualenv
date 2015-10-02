@@ -4,52 +4,66 @@ environment:
     # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
     # /E:ON and /V:ON options are not enabled in the batch script intepreter
     # See: http://stackoverflow.com/a/13751649/163740
-    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\.appveyor\\run_with_env.cmd"
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\.appveyor\\appveyor-with-compiler.cmd"
 
   matrix:
-    - PYTHON: "C:\\Python27"
+    - PYTHON_HOME: "C:\\Python27"
       PYTHON_VERSION: "2.7.9"
       PYTHON_ARCH: "32"
       TOXENV: "py27"
       TOXPYTHON: "C:\\Python27\\python.exe"
 
-    - PYTHON: "C:\\Python27-x64"
+    - PYTHON_HOME: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.9"
       PYTHON_ARCH: "64"
       TOXENV: "py27"
       TOXPYTHON: "C:\\Python27-x64\\python.exe"
+      WINDOWS_SDK_VERSION: "v7.0"
 
-    - PYTHON: "C:\\Python33"
+    - PYTHON_HOME: "C:\\Python33"
       PYTHON_VERSION: "3.3.6"
       PYTHON_ARCH: "32"
       TOXENV: "py33"
       TOXPYTHON: "C:\\Python33\\python.exe"
 
-    - PYTHON: "C:\\Python33-x64"
+    - PYTHON_HOME: "C:\\Python33-x64"
       PYTHON_VERSION: "3.3.6"
       PYTHON_ARCH: "64"
       TOXENV: "py33"
       TOXPYTHON: "C:\\Python33-x64\\python.exe"
+      WINDOWS_SDK_VERSION: "v7.1"
 
-    - PYTHON: "C:\\Python34"
+    - PYTHON_HOME: "C:\\Python34"
       PYTHON_VERSION: "3.4.2"
       PYTHON_ARCH: "32"
       TOXENV: "py34"
       TOXPYTHON: "C:\\Python34\\python.exe"
 
-    - PYTHON: "C:\\Python34-x64"
+    - PYTHON_HOME: "C:\\Python34-x64"
       PYTHON_VERSION: "3.4.2"
       PYTHON_ARCH: "64"
       TOXENV: "py34"
       TOXPYTHON: "C:\\Python34-x64\\python.exe"
+      WINDOWS_SDK_VERSION: "v7.1"
 
+    - PYTHON_HOME: "C:\\Python35"
+      PYTHON_VERSION: "3.5"
+      PYTHON_ARCH: "32"
+      TOXENV: "py35"
+      TOXPYTHON: "C:\\Python35\\python.exe"
+
+    - PYTHON_HOME: "C:\\Python35-x64"
+      PYTHON_VERSION: "3.5"
+      PYTHON_ARCH: "64"
+      TOXENV: "py35"
+      TOXPYTHON: "C:\\Python35-x64\\python.exe"
 init:
-  - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
+  - "ECHO %PYTHON_HOME% %PYTHON_VERSION% %PYTHON_ARCH%"
 
 install:
-  - "powershell .appveyor\\install.ps1"
+  - "python -u .appveyor\\appveyor-bootstrap.py"
 
 build: off
 
 test_script:
-    - "%CMD_IN_ENV% %PYTHON%/Scripts/tox.exe -v"
+    - "%CMD_IN_ENV% %PYTHON_HOME%/Scripts/tox.exe -v"

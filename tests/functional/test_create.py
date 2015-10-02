@@ -52,7 +52,7 @@ PYTHON_BINS = [
     (True, resolve_path("~/.pyenv/shims/python"), None),
     (True, resolve_path("~/.pyenv/shims/python2.6"), "lib/python2.6/site-packages"),
     (True, resolve_path("~/.pyenv/shims/python2.7"), "lib/python2.7/site-packages"),
-    (True, resolve_path("~/.pyenv/shims/python3.2"), "lib/python3.2/site-packages"),
+    # (True, resolve_path("~/.pyenv/shims/python3.2"), "lib/python3.2/site-packages"),
     (True, resolve_path("~/.pyenv/shims/python3.3"), "lib/python3.3/site-packages"),
     (True, resolve_path("~/.pyenv/shims/python3.4"), "lib/python3.4/site-packages"),
     (True, resolve_path("~/.pyenv/shims/pypy"), "site-packages"),
@@ -63,7 +63,7 @@ if not os.environ.get("CIRCLE_BUILD_NUM"):
         (True, "/usr/bin/python", None),
         (True, "/usr/bin/python2.6", "lib/python2.6/site-packages"),
         (True, "/usr/bin/python2.7", "lib/python2.7/site-packages"),
-        (True, "/usr/bin/python3.2", "lib/python3.2/site-packages"),
+        # (True, "/usr/bin/python3.2", "lib/python3.2/site-packages"),
         (True, "/usr/bin/python3.3", "lib/python3.3/site-packages"),
         (True, "/usr/bin/python3.4", "lib/python3.4/site-packages"),
         (True, "/usr/bin/pypy", "site-packages"),
@@ -73,7 +73,7 @@ for path, sitepackages in [
     (locate_on_path("python"), None),
     (locate_on_path("python2.6"), None),
     (locate_on_path("python2.7"), None),
-    (locate_on_path("python3.2"), None),
+    # (locate_on_path("python3.2"), None),
     (locate_on_path("python3.3"), None),
     (locate_on_path("python3.4"), None),
     (locate_on_path("pypy"), None),
@@ -221,7 +221,7 @@ def assert_env_creation(env):
 ########################################################################################################################
 
 
-def test_create_2time(env):
+def test_create_second_time(env):
     target = env.target_python
     if target:
         if 'Python33' in target or 'python3.3' in target:
@@ -234,7 +234,7 @@ def test_create_2time(env):
     env.create_virtualenv()
 
 
-def test_installation(env, python_conf):
+def test_package_installation(env, python_conf):
     is_global, _, _ = python_conf
     package_available_outside = env.has_systemsitepackages and env.has_package('nameless')
 
@@ -274,7 +274,7 @@ def test_installation(env, python_conf):
 
 
 @pytest.mark.skipif(IS_26, reason="Tox doesn't work on Python 2.6")
-def test_create_w_tox(tmpdir):
+def test_create_with_tox(tmpdir):
     env = scripttest.TestFileEnvironment(str(tmpdir.join('sandbox')), capture_temp=True)
     result = env.run(
         'tox', '-c', os.path.join(os.path.dirname(__file__), 'test_tox.ini'),
@@ -283,22 +283,29 @@ def test_create_w_tox(tmpdir):
     print(result)
 
 
-def test_sitepackages(env, python_conf):
+def test_pth_link_works(env, python_conf):
     _, python, sitepackages = python_conf
     if sitepackages is None:
         pytest.skip(msg="No site-packages specified for this configuration.")
     sitepackages_path = os.path.join(
         env.base_path, env.virtualenv_name, sitepackages
     )
-    env.run_inside("python", "-c", "import sys; assert {0!r} in sys.path, 'is not in %r' % sys.path".format(
-        sitepackages_path
-    ))
+    env.run_inside("python", "-c", """
+import sys
+from os.path import normcase
+ext_site = normcase({0!r})
+for path in sys.path:
+    if ext_site == normcase(path):
+        break
+else:
+    raise AssertionError('%r is not in %r' % (ext_site, sys.path))
+""".format(sitepackages_path))
     with open(os.path.join(sitepackages_path, "mymodule.pth"), 'w') as fh:
         fh.write(os.path.join(os.path.dirname(__file__), "testsite"))
     env.run_inside("python", "-c", "import mymodule")
 
 
-def test_pip_inst_ext(env):
+def test_pip_install_extension(env):
     if IS_WINDOWS and env.target_python:
         pytest.skip(msg="Disabled on windows. Compiler needs different environment.")
     base_dir = os.path.join(os.path.dirname(__file__), 'testcext')
@@ -306,7 +313,7 @@ def test_pip_inst_ext(env):
     env.run_inside('python', '-c', 'import test_cext')
 
 
-def test_reg_inst_ext(env):
+def test_setuppy_install_extension(env):
     if IS_WINDOWS and env.target_python:
         pytest.skip(msg="Disabled on windows. Compiler needs different environment.")
     base_dir = os.path.join(os.path.dirname(__file__), 'testcext')

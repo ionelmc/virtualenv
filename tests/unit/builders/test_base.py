@@ -132,6 +132,7 @@ def test_base_builder_install_tools(tmpdir, flavor, pip, setuptools,
     projects = []
     if pip:
         projects.append("pip")
+        projects.append("wheel")
     if setuptools:
         projects.append("setuptools")
 
