@@ -55,7 +55,7 @@ PyPI package
 
 There's an alternative package on `PyPI`: `virtualenv-rewrite <https://pypi.python.org/pypi/virtualenv-rewrite/>`_::
 
-    pip install virtualenv-review
+    pip install virtualenv-rewrite
 
 .. note::
 
@@ -63,7 +63,7 @@ There's an alternative package on `PyPI`: `virtualenv-rewrite <https://pypi.pyth
     before, eg::
 
         pip uninstall virtualenv
-        pip install virtualenv-review
+        pip install virtualenv-rewrite
 
 Docs
 ----
