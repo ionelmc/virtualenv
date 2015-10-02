@@ -10,7 +10,7 @@ __title__ = "virtualenv-rewrite"
 __summary__ = "Virtual Python Environment Builder (complete rewrite)"
 __uri__ = "https://github.com/ionelmc/virtualenv/"
 
-__version__ = "14.0.0"
+__version__ = "14.1.0"
 
 __author__ = "Ionel Cristian Mărieș"
 __email__ = "contact@ionelmc.ro"

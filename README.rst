@@ -69,3 +69,18 @@ Docs
 ----
 
 For the old documentation, see https://virtualenv.pypa.io/
+
+Changelog
+---------
+
+14.1.0 (2015-10-02)
+```````````````````
+
+* Update bundled setuptools to ``18.3.2``.
+* Update bundled wheel to ``0.26.0``.
+* Fixed issues with case normalization on Windows (some paths weren't properly case-normalized).
+
+14.0.0 (2015-09-15)
+```````````````````
+
+* Initial PyPI release.
