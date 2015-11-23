@@ -284,4 +284,8 @@ class BaseBuilder(object):
             command + projects,
             PYTHONPATH=os.pathsep.join(wheels),
             VIRTUALENV_BOOTSTRAP_ADJUST_EGGINSERT="-1",
+            PIP_FIND_LINKS="",
+            PIP_USE_WHEEL="1",
+            PIP_NO_INDEX="1",
+            PIP_USER="0",
         )

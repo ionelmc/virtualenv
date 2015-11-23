@@ -156,5 +156,9 @@ def test_base_builder_install_tools(tmpdir, flavor, pip, setuptools,
                     glob.glob(os.path.join(WHEEL_DIR, "*.whl")),
                 ),
                 VIRTUALENV_BOOTSTRAP_ADJUST_EGGINSERT="-1",
+                PIP_FIND_LINKS="",
+                PIP_USE_WHEEL="1",
+                PIP_NO_INDEX="1",
+                PIP_USER="0",
             )
         ]
