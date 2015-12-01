@@ -4,7 +4,7 @@ sudo: false
 env:
   - INSTALL_FIRST=yes TOXENV=py26
   - INSTALL_FIRST=yes TOXENV=py27
-#  - INSTALL_FIRST=yes TOXENV=py32
+  - INSTALL_FIRST=yes TOXENV=py32
   - INSTALL_FIRST=yes TOXENV=py33
   - INSTALL_FIRST=yes TOXENV=py34
   - INSTALL_FIRST=yes TOXENV=py35
@@ -12,7 +12,7 @@ env:
   - INSTALL_FIRST=yes TOXENV=pypy3
   - TOXENV=py26
   - TOXENV=py27
-#  - TOXENV=py32
+  - TOXENV=py32
   - TOXENV=py33
   - TOXENV=py34
   - TOXENV=py35
@@ -22,6 +22,14 @@ env:
   - TOXENV=pep8
   - TOXENV=py2pep8
   - TOXENV=packaging
+
+matrix:
+  allow_failures:
+    - env: TOXENV=pypy3
+    - env: INSTALL_FIRST=yes TOXENV=pypy3
+    - env: TOXENV=py32
+    - env: INSTALL_FIRST=yes TOXENV=py32
+
 install:
   - if [[ $INSTALL_FIRST == yes ]]; then pip install .; fi
   - pip install tox nameless setuptools
