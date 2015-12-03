@@ -72,7 +72,7 @@ setuptools.setup(
     },
 
     install_requires=[
-        "click",
+        "click<6.0",
     ],
 
     zip_safe=False,
