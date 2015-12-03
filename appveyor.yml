@@ -59,11 +59,11 @@ environment:
       TOXPYTHON: "C:\\Python35-x64\\python.exe"
 init:
   - "ECHO %PYTHON_HOME% %PYTHON_VERSION% %PYTHON_ARCH%"
-
 install:
   - "python -u .appveyor\\appveyor-bootstrap.py"
 
 build: off
 
 test_script:
+    - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
     - "%CMD_IN_ENV% %PYTHON_HOME%/Scripts/tox.exe -v"
