@@ -83,7 +83,7 @@ def install_pip(home):
 
 
 def install_packages(home, *packages):
-    cmd = [home + "/Scripts/pip.exe", "install"]
+    cmd = [home + "/Scripts/pip.exe", "install", "--ignore-installed", "--upgrade"]
     cmd.extend(packages)
     check_call(cmd)
 

@@ -11,7 +11,7 @@ What pythons are currently supported in this fork:
   `pip is broken on the 2.4.0 release <https://bitbucket.org/pypy/pypy/issue/1696/can-not-install-pip-with-get-pippy>`_)
 * Python 2.6
 * Python 2.7
-* Python 3.2 (not tested, may work)
+* Python 3.2 (tested but unsupported, check test results for exact situation)
 * Python 3.3
 * Python 3.4
 
