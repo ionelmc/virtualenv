@@ -12,7 +12,7 @@ __title__ = os.environ.get("DIST", "virtualenv-rewrite")
 __summary__ = "Virtual Python Environment Builder (complete rewrite)"
 __uri__ = "https://github.com/ionelmc/virtualenv/"
 
-__version__ = "14.5.0"
+__version__ = "14.6.0"
 
 __author__ = "Ionel Cristian Mărieș"
 __email__ = "contact@ionelmc.ro"
