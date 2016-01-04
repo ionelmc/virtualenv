@@ -48,10 +48,25 @@ What's missing:
 Try it
 ------
 
-To install this, just ``pip install --ignore-installed https://github.com/ionelmc/virtualenv/archive/develop.zip``.
+Option 1: release from alternate index
+``````````````````````````````````````
 
-PyPI package
-````````````
+The alternate index: https://anaconda.org/ionelmc/virtualenv
+
+To install::
+
+    pip install -i https://pypi.anaconda.org/ionelmc/simple virtualenv
+
+
+Option 2: development version
+`````````````````````````````
+
+::
+
+    pip install --ignore-installed https://github.com/ionelmc/virtualenv/archive/develop.zip
+
+Option 3: release with different name
+`````````````````````````````````````
 
 There's an alternative package on `PyPI`: `virtualenv-rewrite <https://pypi.python.org/pypi/virtualenv-rewrite/>`_::
 
