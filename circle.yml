@@ -1,3 +1,6 @@
+dependencies:
+  override:
+  - pip install --upgrade --ignore-installed pip setuptools wheel tox
 test:
   pre:
   - ls -al ~/.pyenv/shims ~/.pyenv/versions 
