@@ -4,6 +4,8 @@ dependencies:
 test:
   pre:
   - ls -al ~/.pyenv/shims ~/.pyenv/versions 
-  - pyenv global 2.6.8 2.7.9 pypy-2.4.0 3.2.5 3.3.3 3.4.1
+  - pyenv global 2.6.8 2.7.10 pypy-2.5.0 3.2.5 3.3.3 3.4.3
+  - pyenv rehash
+  - for bin in python2.6 python2.7 pypy python3.2 python3.3 python3.4; do $bin -mpip install --upgrade --ignore-installed pip setuptools wheel; done
   override:
   - tox --skip-missing-interpreters -v
