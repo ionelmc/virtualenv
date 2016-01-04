@@ -14,6 +14,6 @@ test:
         $bin -mpip install --upgrade --ignore-installed pip setuptools wheel
         rm -rf $($bin -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")/*.egg
     done
-    rm $(which python3.2)
+    rm ~/.pyenv/shims/python3.2
   override:
   - tox --skip-missing-interpreters -v
