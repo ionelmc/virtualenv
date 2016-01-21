@@ -9,7 +9,7 @@ __title__ = "virtualenv"
 __summary__ = "Virtual Python Environment Builder"
 __uri__ = "https://virtualenv.pypa.io/"
 
-__version__ = "14.0.0.dev0"
+__version__ = "15.0.0.dev0"
 
 __author__ = "Python Packaging Authority"
 __email__ = "pypa-dev@googlegroups.com"
