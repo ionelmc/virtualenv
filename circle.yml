@@ -1,6 +1,19 @@
+dependencies:
+  override:
+  - pip install --upgrade --ignore-installed pip setuptools wheel tox
 test:
   pre:
-  - ls -al ~/.pyenv/shims ~/.pyenv/versions 
-  - pyenv global 2.6.8 2.7.9 pypy-2.4.0 3.2.5 3.3.3 3.4.1
+  - ls -al ~/.pyenv/shims ~/.pyenv/versions
+  - pyenv versions
+  - pyenv global 2.6.8 2.7.10 pypy-2.5.0 3.3.3 3.4.3 3.5.0
+  - pyenv rehash
+  - pyenv versions
+  - |
+    set -x
+    for bin in python2.6 python2.7 pypy python3.3 python3.4 python3.5; do
+        $bin -mpip install --upgrade --ignore-installed pip setuptools wheel
+        rm -rf $($bin -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")/*.egg
+    done
+    rm ~/.pyenv/shims/python3.2
   override:
   - tox --skip-missing-interpreters -v
